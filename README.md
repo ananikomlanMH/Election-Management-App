@@ -74,15 +74,15 @@ He manages :
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/ananikomlanMH/Election-Management-App
-[contributors-url]: https://github.com/ananikomlanMH/Best-README-Template/graphs/contributors
+[contributors-url]: https://github.com/ananikomlanMH/Election-Management-App/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/ananikomlanMH/Election-Management-App
-[forks-url]: https://github.com/ananikomlanMH/Best-README-Template/network/members
+[forks-url]: https://github.com/ananikomlanMH/Election-Management-App/network/members
 [stars-shield]: https://img.shields.io/github/stars/ananikomlanMH/Election-Management-App
-[stars-url]: https://github.com/ananikomlanMH/Best-README-Template/stargazers
+[stars-url]: https://github.com/ananikomlanMH/Election-Management-App/stargazers
 [issues-shield]: https://img.shields.io/github/issues/ananikomlanMH/Election-Management-App
-[issues-url]: https://github.com/ananikomlanMH/Best-README-Template/issues
+[issues-url]: https://github.com/ananikomlanMH/Election-Management-App/issues
 [license-shield]: https://img.shields.io/github/license/ananikomlanMH/Election-Management-App
-[license-url]: https://github.com/ananikomlanMH/Best-README-Template/blob/master/LICENSE.txt
+[license-url]: https://github.com/ananikomlanMH/Election-Management-App/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/komlan-mawulom-h-anani-b86a30219
 [product-screenshot]: static/images/dev_img/screenshot.png
