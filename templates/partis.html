@@ -1,0 +1,109 @@
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partis - Election</title>
+    {% include("static_header.html") %}
+</head>
+<body>
+    {% include("static_navbar.html") %}
+
+    <section class="home-section">
+    <div class="link">Partis</div>
+    <div class="filter-form">
+        <div class="wrapper">
+            <div class="search_box">
+                <div class="dropdown">
+                    <div class="default_option">Trier Par</div>  
+                    <ul>
+                        <li><a href="?sort=raisonSociete&dir=ASC">Partis</a></li>
+                    </ul>
+                </div>
+                <form action="" method="get">
+                    <div class="search_field">
+                        <input type="text" autocomplete="off" name="q" class="input" value="" placeholder="Rechercher...">
+                        <i class="icon-search fi-rr-search"></i>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="addBtn" style="display: flex;">
+                            <div class="show-dropdown">
+                <div class="default_option">Afficher</div>  
+                <ul>
+                    <li><a href="?show=10">10/Pages</a></li>
+                    <li><a href="?show=25">25/Pages</a></li>
+                    <li><a href="?show=50">50/Pages</a></li>
+                    <li><a href="?show=100">100/Pages</a></li>
+                </ul>
+            </div>
+            <button onclick="popUp();" >Nouveau Partis<i class="fi-rr-plus"></i></button>
+        </div>
+    </div>
+    <div class="table-list">
+        <table>
+            <thead>
+                <th style="text-align: center;">N°</th>
+                <th>Partis</th>
+                <th></th>
+            </thead>
+            <tbody>
+                {% if allPartis %}
+                {% for item in allPartis %}
+                <tr>
+                    <td style="text-align: center;"><span>{{ item[0] }}</span></td>
+                    <td><span>{{ item[1] }}</span></td>
+                    <td class="table_drop_action"><i class='icon fi-rr-menu-dots-vertical'></i>
+                        <div class="dropdown">
+                            <ul>
+                                <li><a href="#" onclick="popEdit(2);" ><i class="fi-rr-edit"></i>Editer</a></li>
+                                <li><a class="deleteData" href="/deletePartis/{{ item[0] }}" data-content = "le partis {{ item[1] }}"><i class="fi-rr-trash"></i>Supprimer</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td style="text-align: center;" colspan="3">Aucun enregistrement trouvé</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    </section>
+
+    <div class="popUp_section">
+        <div class="popUp_container">
+            <div class="popUp_row">
+                <div class="pop_header">
+                    <p>Partis Politique</p>
+                    <i onclick="popUp();" class="fi-rr-cross"></i>
+                </div>
+                <div class="popUp_body">
+                    <div class="pop-form">
+                        <form action="{{url_for('addParti')}}" method="POST">
+                            <div class="field">
+                                <div class="input-area">
+                                    <input required autocomplete="off" type="text" placeholder="Partis" name="nomParti">
+                                    <i class="icon fi-rr-megaphone"></i>
+                                </div>
+                            </div>
+                            <div class="validateBtn">
+                                <input name="add" type="submit" value="Enregistrer">
+                                <input onclick="popUp();" type="reset" value="Annuler">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include("static_footer.html") %}
+</body>
+</html>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidats - Election</title>
+    {% include("static_header.html") %}
+</head>
+<body>
+    {% include("static_navbar.html") %}
+
+    <section class="home-section">
+    <div class="link">Candidats</div>
+    <div class="filter-form">
+        <div class="wrapper">
+            <div class="search_box">
+                <div class="dropdown">
+                    <div class="default_option">Trier Par</div>  
+                    <ul>
+                        <li><a href="?sort=raisonSociete&dir=ASC">Raison Social</a></li>
+                        <li><a href="?sort=adresseSociete&dir=ASC">Adresse</a></li>
+                        <li><a href="?sort=contactSociete&dir=ASC">Contact</a></li>
+                        <li><a href="?sort=emailSociete&dir=ASC">Email</a></li>
+                        <li><a href="?sort=nifSociete&dir=ASC">NIF</a></li>
+                    </ul>
+                </div>
+                <form action="" method="get">
+                    <div class="search_field">
+                        <input type="text" autocomplete="off" name="q" class="input" value="" placeholder="Rechercher...">
+                        <i class="icon-search fi-rr-search"></i>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="addBtn" style="display: flex;">
+                            <div class="show-dropdown">
+                <div class="default_option">Afficher</div>  
+                <ul>
+                    <li><a href="?show=10">10/Pages</a></li>
+                    <li><a href="?show=25">25/Pages</a></li>
+                    <li><a href="?show=50">50/Pages</a></li>
+                    <li><a href="?show=100">100/Pages</a></li>
+                </ul>
+            </div>
+            <button onclick="popUp();" >Nouvelle Sociétés<i class="fi-rr-plus"></i></button>
+        </div>
+    </div>
+    </section>
+    {% include("static_footer.html") %}
+</body>
+</html>
+{% endblock %}

@@ -1,0 +1,272 @@
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidats - Election</title>
+    {% include("static_header.html") %}
+</head>
+<body>
+    {% include("static_navbar.html") %}
+
+    <section class="home-section">
+    <div class="link">Candidats</div>
+    <div class="filter-form">
+        <div class="wrapper">
+            <div class="search_box">
+                <div class="dropdown">
+                    <div class="default_option">Trier Par</div>  
+                    <ul>
+                        <li><a href="?{{ urlHelperWiths2Params('sort','numRegion','dir','ASC') }}">ID</a></li>
+                        <li><a href="?{{ urlHelperWiths2Params('sort','nomCandidat','dir','ASC') }}">Noms</a></li>
+                    </ul>
+                </div>
+                <form action="" method="get">
+                    <div class="search_field">
+                        <input type="text" autocomplete="off" name="q" class="input" placeholder="Rechercher..." {% if(request.args.get('q','')) %} value="{{ request.args.get('q','') }}" {% endif %}>
+                        <i class="icon-search fi-rr-search"></i>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="addBtn" style="display: flex;">
+            {% if(request.args.get('q','') or request.args.get('show','') or request.args.get('sort','') or request.args.get('type','')) %}
+                <button class="filter"><a href="{{ url_for('candidats')}}">Effacer les filtres</a><i class="fi-rr-broom"></i></button>
+            {% endif %}
+                <div class="show-dropdown">
+                <div class="default_option">Afficher</div>  
+                <ul>
+                    <li><a href="?{{ urlHelper('show',10) }}">10/Pages</a></li>
+                    <li><a href="?{{ urlHelper('show',25) }}">25/Pages</a></li>
+                    <li><a href="?{{ urlHelper('show',50) }}">50/Pages</a></li>
+                    <li><a href="?{{ urlHelper('show',100) }}">100/Pages</a></li>
+                </ul>
+            </div>
+            <div class="show-type">
+                <div class="default_option">Type Candidat</div>  
+                <ul>
+                    <li><a href="?{{ urlHelper('type',0) }}">{% if request.args.get('type','') and request.args.get('type','') == '0' %} <i class="fi-rr-check" style="margin-right: 10px;"></i> {% endif %}Présidentielles</a></li>
+                    <li><a href="?{{ urlHelper('type',1) }}">{% if request.args.get('type','') and request.args.get('type','') == '1' %} <i class="fi-rr-check" style="margin-right: 10px;"></i> {% endif %}Législatives</a></li>
+                </ul>
+            </div>
+            <button onclick="popUp();" >Nouveau Candidat<i class="fi-rr-plus"></i></button>
+        </div>
+    </div>
+    <div class="table-list">
+        <table>
+            <thead>
+                <th></th>
+                <th>{{ th('nomCandidat','nomCandidat', 'Noms')|safe }}</th>
+                <th>{{ th('date_naissCandidat','date_naissCandidat', 'Date Naissance')|safe }}</th>
+                <th>{{ th('lieuNaissCandidat','lieuNaissCandidat', 'Lieu Naissance')|safe }}</th>
+                <th>{{ th('genreCandidat','genreCandidat', 'Genre')|safe }}</th>
+                <th>{{ th('TYPECANDIDAT_idType','TYPECANDIDAT_idType', 'Type Candidat')|safe }}</th>
+                <th>{{ th('PARTI_numParti','PARTI_numParti', 'Parti')|safe }}</th>
+                <th></th>
+            </thead>
+            <tbody>
+                {% if allCandidat %}
+                {% for item in allCandidat %}
+                <tr>
+                    <td class="img">
+                        <div>
+                        <img src="{{url_for('static',filename='images/dev_img/comment-user.jpg')}}" alt="">
+                    </div>
+                    </td>
+                    <td><span>{{ item[1] }} {{ item[2] }}</span></td>
+                    <td><span>{{ item[3].strftime('%d/%m/%Y') }}</span></td>
+                    <td><span>{{ item[4] }}</span></td>
+                    <td><span>{% if item[5] == 'M' %} Masculin {% else %} Feminin {% endif %}</span></td>
+                    <td><span>{% if item[8] == 0 %}Présidentielles {% else %}Législatives {% endif %}</span></td>
+                    <td><span>{{ item[9] }}</span></td>
+                    <td class="table_drop_action"><i class='icon fi-rr-menu-dots-vertical'></i>
+                        <div class="dropdown">
+                            <ul>
+                                <li><a href="#" onclick="popEdit('{{ item[0] }}');" ><i class="fi-rr-edit"></i>Editer</a></li>
+                                <li><a class="deleteData" href="/deleteCandidat/{{ item[0] }}" data-content = "le candidat {{ item[1] }} {{ item[2] }}"><i class="fi-rr-trash"></i>Supprimer</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td style="text-align: center;" colspan="8">Aucun enregistrement trouvé</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <div class="table-nav">
+        <div class="pagination">
+            {% if nbrPage > 1 and currentPage > 1 %}
+                <a href="?{{ urlHelper('p',currentPage - 1) }}"><i class="fi-rr-angle-left"></i> Précedent</a>
+            {% endif %}
+            {% if nbrPage > 1 and currentPage < nbrPage %}
+                <a href="?{{ urlHelper('p',currentPage + 1) }}">Suivant <i class="fi-rr-angle-right"></i></a>
+            {% endif %}
+        </div>
+        <p><span>{{ nbr_elements_courant }}/{{ nbrElements }}</span> Elements</p>
+    </div>
+    </section>
+
+    <div class="popUp_section">
+        <div class="popUp_container">
+            <div class="popUp_row">
+                <div class="pop_header">
+                    <p>Candidat</p>
+                    <i onclick="popUp();" class="fi-rr-cross"></i>
+                </div>
+                <div class="popUp_body">
+                    <div class="pop-form">
+                        <form action="{{url_for('addCandidat')}}" method="POST">
+                            <div class="field">
+                                <div class="input-area">
+                                    <input required autocomplete="off" type="text" placeholder="Nom" name="nomCandidat">
+                                    <i class="icon fi-rr-user"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <input required autocomplete="off" type="text" placeholder="Prénom" name="prenomCandidat">
+                                    <i class="icon fi-rr-user"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <input required type="date" placeholder="Date Naissance" name="date_naissCandidat">
+                                    <i class="icon fi-rr-calendar"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <input required autocomplete="off" type="text" placeholder="Lieu Naissance" name="lieuNaissCandidat">
+                                    <i class="icon fi-rr-map"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <select required name="genreCandidat" id="genreCandidat">
+                                        <option data-placeholder="true"></option>
+                                        <option value="M">Masculin</option>
+                                        <option value="F">Feminin</option>
+                                    </select>
+                                    <i class="icon fi-rr-user"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <select required name="TYPECANDIDAT_idType" id="TYPECANDIDAT_idType">
+                                        <option data-placeholder="true"></option>
+                                        {% for type in allType %}
+                                        <option value="{{ type[0] }}">{% if type[1] == 0%} Élections Présidentielles {% else %} Élections Législatives {% endif %}</option>
+                                        {% endfor %} 
+                                    </select>
+                                    <i class="icon fi-rr-comment"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <select required name="PARTI_numParti" id="PARTI_numParti">
+                                        <option data-placeholder="true"></option>
+                                        {% for parti in allParti %}
+                                        <option value="{{ parti[0] }}">{{ parti[1] }}</option>
+                                        {% endfor %} 
+                                    </select>
+                                    <i class="icon fi-rr-megaphone"></i>
+                                </div>
+                            </div>
+                            <div class="validateBtn">
+                                <input name="add" type="submit" value="Enregistrer">
+                                <input onclick="popUp();" type="reset" value="Annuler">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- edit candidat -->
+    {% for item in allCandidat %}
+    <div class="popUp_section editId{{ item[0] }}">
+        <div class="popUp_container">
+            <div class="popUp_row">
+                <div class="pop_header">
+                    <p>Candidat: <span>{{ item[1] }} {{ item[2] }}</span></p>
+                    <i onclick="popEdit('{{ item[0] }}');" class="fi-rr-cross"></i>
+                </div>
+                <div class="popUp_body">
+                    <div class="pop-form">
+                        <form action="{{url_for('editCandidat')}}" method="POST">
+                            <input type="hidden" name="numCandidat" value="{{ item[0] }}">
+                            <div class="field">
+                                <div class="input-area">
+                                    <input required autocomplete="off" type="text" value="{{ item[1] }}" placeholder="Nom" name="nomCandidat">
+                                    <i class="icon fi-rr-user"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <input required autocomplete="off" type="text" value="{{ item[2] }}" placeholder="Prénom" name="prenomCandidat">
+                                    <i class="icon fi-rr-user"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <input required type="date" placeholder="Date Naissance" value="{{ item[3] }}" name="date_naissCandidat">
+                                    <i class="icon fi-rr-calendar"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <input required autocomplete="off" type="text" value="{{ item[4] }}" placeholder="Lieu Naissance" name="lieuNaissCandidat">
+                                    <i class="icon fi-rr-map"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <select required name="genreCandidat" id="genreCandidat">
+                                        <option value="M" {% if item[5] == 'M' %} selected {% endif %}>Masculin</option>
+                                        <option value="F" {% if item[5] == 'F' %} selected {% endif %}>Feminin</option>
+                                    </select>
+                                    <i class="icon fi-rr-user"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <select required name="TYPECANDIDAT_idType" id="TYPECANDIDAT_idType">
+                                        {% for type in allType %}
+                                        <option value="{{ type[0] }}" {% if item[6] == type[0] %} selected {% endif %}>{% if type[1] == 0%} Élections Présidentielles {% else %} Élections Législatives {% endif %}</option>
+                                        {% endfor %} 
+                                    </select>
+                                    <i class="icon fi-rr-comment"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <select required name="PARTI_numParti" id="PARTI_numParti">
+                                        {% for parti in allParti %}
+                                        <option value="{{ parti[0] }}" {% if item[7] == parti[0] %} selected {% endif %}>{{ parti[1] }}</option>
+                                        {% endfor %} 
+                                    </select>
+                                    <i class="icon fi-rr-megaphone"></i>
+                                </div>
+                            </div>
+                            <div class="validateBtn">
+                                <input name="edit" type="submit" value="Enregistrer">
+                                <input onclick="popEdit('{{ item[0] }}');" type="reset" value="Annuler">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% include("static_footer.html") %}
+</body>
+</html>
+{% endblock %}

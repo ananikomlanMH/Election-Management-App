@@ -1,0 +1,89 @@
+<script src="{{url_for('static',filename='js/jquery.min.js')}}"></script>
+<script src="{{url_for('static',filename='js/jquery-ui.js')}}"></script>
+<script src="{{url_for('static',filename='js/simple-notify.min.js')}}"></script>
+<script src="{{url_for('static',filename='js/jquery-confirm.min.js')}}"></script>
+<script src="{{url_for('static',filename='js/slimselect.js')}}"></script>
+<script src="{{url_for('static',filename='js/flatpickr.js')}}"></script>
+<script src="{{url_for('static',filename='js/main.js')}}"></script>
+<script src="{{url_for('static',filename='js/login_validation.js')}}"></script>
+<script src="{{url_for('static',filename='js/chart.js')}}"></script>
+<script src="{{url_for('static',filename='js/select.js')}}"></script>
+<script src="{{url_for('static',filename='js/select2.js')}}"></script>
+
+{% if activate == 'dashboard' %} 
+<script>
+    let E1 = [{{ votePresi[0] }}, {{ votePresi[1] }}, {{ votePresi[2] }}, {{ votePresi[3] }}, {{ votePresi[4] }}, {{ votePresi[5] }}, {{ votePresi[6]}}, {{ votePresi[7]}}]
+    let E2 = [{{ voteLegis[0] }}, {{ voteLegis[1] }}, {{ voteLegis[2] }}, {{ voteLegis[3] }}, {{ voteLegis[4] }}, {{ voteLegis[5] }}, {{ voteLegis[6]}}, {{ voteLegis[7]}}]
+    let E3 = [{{ allVoteAll[0] }}, {{ allVoteAll[1] }}]
+</script>
+<script src="{{url_for('static',filename='js/stat.js')}}"></script>
+{% endif %}
+<script>
+    setTimeout(function(){
+        $('.loader').fadeToggle();
+    }, 800);
+    $( ".search_field .input" ).autocomplete({
+      source: {% if jsonSearch %}{{ jsonSearch|safe }} {% else %} '' {% endif %},
+      minLength: 1
+  });
+  let deleteData = document.querySelectorAll('.deleteData');
+  deleteData.forEach(data => {
+      data.addEventListener("click", (e)=>{
+          e.preventDefault();
+          $.confirm({
+                  icon: 'fa fa-question',
+                  title: 'Confimation',
+                  content: 'Voulez-vous vraiment supprimer <br/><b class="delText">'+data.dataset.content+' ?</b>',
+                  useBootstrap: false,
+                  boxWidth: '500px',
+                  theme: 'modern',
+                  closeIcon: true,
+                  animation: 'scale',
+                  type: 'red',
+                  buttons: {
+                      Supprimer: function () {
+                          location.href = data.href;
+                      },
+                      Annuler: function (){
+                      }
+                  }
+              });
+      });
+  });
+      function MyNotification(type, msg){
+      new Notify 
+      ({
+          status: type,
+          title: 'ELECTION',
+          text: msg,
+          effect: 'fade',
+          speed: 300,
+          customClass: '',
+          customIcon: '',
+          showIcon: true,
+          showCloseButton: true,
+          autoclose: true,
+          autotimeout: 4500,
+          gap: 20,
+          distance: 20,
+          type: 1,
+          position: 'right bottom',
+          customWrapper: '',
+      });
+  }
+
+  flatpickr("input[type=date]", {
+        altInput: true,
+        altFormat: "l j F Y",
+        dateFormat: "Y-m-d",
+        minDate: ""
+    });
+
+  {% with messages = get_flashed_messages(with_categories = true) %}
+  {% if messages %}
+    {% for category, message in messages%}
+        MyNotification( "{{ category }}" , "{{ message }}");
+    {% endfor %}
+  {% endif %}
+  {% endwith %}
+</script>

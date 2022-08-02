@@ -1,0 +1,67 @@
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Election</title>
+    {% include("static_header.html") %}
+</head>
+<body>
+    {% include("static_navbar.html") %}
+
+    <section class="home-section">
+        <div class="link">Dashboard</div>
+        <div class="stats-countainer">
+            <div class="stat-item">
+                <div class="icon">
+                    <i class="fi-rr-badge"></i>
+                </div>
+                <div class="text">
+                    <p>Candidats ({{ allCandidat }})</p>
+                    <h3><span>-- </span>--------------</h3>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div class="icon">
+                    <i class="fi-rr-briefcase"></i>
+                </div>
+                <div class="text">
+                    <p>Electeurs ({{ allElecteur }})</p>
+                    <h3><span>-- </span>--------------</h3>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div class="icon">
+                    <i class="fi-rr-graduation-cap"></i>
+                </div>
+                <div class="text">
+                    <p>Parti Politique ({{ allParti }})</p>
+                    <h3><span>-- </span>--------------</h3>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div class="icon">
+                    <i class="fi-rr-world"></i>
+                </div>
+                <div class="text">
+                    <p>Bureau ({{ allBureau }})</p>
+                    <h3><span>-- </span>--------------</h3>
+                </div>
+            </div>
+        </div>
+        <div class="stat-chart">
+        <div class="line-chart">
+            <canvas id="myChart" width="1293" height="670" style="display: block; box-sizing: border-box; height: 602.667px; width: 1149.33px;"></canvas>
+        </div>
+        <div class="pie-chart" style="display:flex;align-items:center;align-content:center;">
+            <canvas id="myPie" width="450" height="450" style="display: block; box-sizing: border-box; height: 400px; width: 400px;"></canvas>
+        </div>
+    </div>
+    </section>
+
+    {% include("static_footer.html") %}
+</body>
+</html>
+{% endblock %}

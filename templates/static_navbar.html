@@ -1,0 +1,69 @@
+<div class="sidebar">
+    <div class="logo-details">
+        <img src="{{url_for('static',filename='images/dev_img/election_logo.svg')}}" alt="logo" class="icon">
+        <i class='fi-rr-menu-burger' id="close-nav"></i>
+    </div>
+    <ul class="nav-list">
+        <li>
+            <a href="/dashboard/" {% if activate == 'dashboard' %} class="active" {% endif %}><i class="fi-rr-dashboard"></i>
+            <span class="links_name">Dashboard</span></a>
+            <span class="tooltip">Dashboard</span>
+        </li>
+        <li>
+            <a href="/votings/" {% if activate == 'votings' %} class="active" {% endif %}><i class="fi-rr-document-signed"></i>
+            <span class="links_name">Votings</span></a>
+            <span class="tooltip">Votings</span>
+        </li>
+        <li>
+            <a href="/candidats/" {% if activate == 'candidats' %} class="active" {% endif %}><i class="fi-rr-comment-user"></i>
+            <span class="links_name">Candidats</span></a>
+            <span class="tooltip">Candidats</span>
+        </li>
+        <li>
+            <a href="/electeurs/" {% if activate == 'electeurs' %} class="active" {% endif %}><i class="fi-rr-user-time"></i>
+            <span class="links_name">Electeurs</span></a>
+            <span class="tooltip">Electeurs</span>
+        </li>
+        <li>
+            <a href="/bureau/" {% if activate == 'bureau' %} class="active" {% endif %}><i class="fi-rr-school"></i>
+            <span class="links_name">Bureau</span></a>
+            <span class="tooltip">Bureau</span>
+        </li>
+        <li>
+            <a href="/partis/" {% if activate == 'partis' %} class="active" {% endif %}><i class="fi-rr-megaphone"></i>
+            <span class="links_name">Partis</span></a>
+            <span class="tooltip">Partis</span>
+        </li>
+        <li>
+            <a href="/regions/" {% if activate == 'regions' %} class="active" {% endif %}><i class="fi-rr-world"></i>
+            <span class="links_name">Regions</span></a>
+            <span class="tooltip">Regions</span>
+        </li>
+        <li>
+            <a href="/departements/" {% if activate == 'departements' %} class="active" {% endif %}><i class="fi-rr-map"></i>
+            <span class="links_name">Departements</span></a>
+            <span class="tooltip">Departements</span>
+        </li>
+        <li>
+            <a href="/communes/" {% if activate == 'communes' %} class="active" {% endif %}><i class="fi-rr-map-marker"></i>
+            <span class="links_name">Communes</span></a>
+            <span class="tooltip">Communes</span>
+        </li>
+        <li class="profile">
+            <div class="profile-details">
+                <img src="{{url_for('static',filename='images/dev_img/profileDefault.png')}}" alt="profileImg">
+                <div class="name_job">
+                    <div class="name">Anani Komlan</div>
+                    <div class="job">Administrateur</div>
+                </div>
+            </div>
+            <a href="" class="logOut">
+                <a href="/logout/" class="log_out_btn" id="deconnexion" title="Deconnexion" onclick="return confirm('Êtes-vous sûr de vouloir vous déconnecter ?')"><i class='fi-rr-sign-out' id="log_out" ></i></a>
+            </a> 
+        </li>
+    </ul>
+</div>
+<div class="loader">
+    <img src="{{url_for('static',filename='images/dev_img/election_logo.svg')}}" alt="logo" class="loader-img">
+    <div class="loader-bar"></div>
+</div>

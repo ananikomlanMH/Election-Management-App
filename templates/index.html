@@ -1,0 +1,25 @@
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% include("entete.html") %}
+    <title>Document</title>
+</head>
+<body>
+   <div class="countainer" style="margin-top: 233px;">
+       <div class="row">
+           <div class="col-md-4 col-md-offset-4">
+               <form action="" method="post">
+                   <input type="text" name="compte" class="form-control" placeholder="Saisir le compte" required><br>
+                   <input type="password" name="password" class="form-control" placeholder="Saisir le mot de passe" required>
+                   <button style="margin-top: 20px;" type="submit" name="connexion" class="btn btn-primary btn-block"><i class="glyphicon glyphicon-log-in"></i> Connexion</button>
+               </form>
+           </div>
+       </div>
+   </div>
+</body>
+</html>
+{% endblock %}

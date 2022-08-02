@@ -1,0 +1,208 @@
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Votings - Election</title>
+    {% include("static_header.html") %}
+</head>
+<body>
+    {% include("static_navbar.html") %}
+
+    <section class="home-section">
+    <div class="link">Votings</div>
+    <div class="filter-form">
+        <div class="wrapper">
+            <div class="search_box">
+                <div class="dropdown">
+                    <div class="default_option">Trier Par</div>  
+                    <ul>
+                       
+                    </ul>
+                </div>
+                <form action="" method="get">
+                    <div class="search_field">
+                        <input type="text" autocomplete="off" name="q" class="input" placeholder="Rechercher..." {% if(request.args.get('q','')) %} value="{{ request.args.get('q','') }}" {% endif %}>
+                        <i class="icon-search fi-rr-search"></i>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="addBtn" style="display: flex;">
+            {% if(request.args.get('q','') or request.args.get('show','') or request.args.get('proc','') or request.args.get('voix','') or request.args.get('sort','') or request.args.get('type','')) %}
+                <button class="filter"><a href="{{ url_for('votings')}}">Effacer les filtres</a><i class="fi-rr-broom"></i></button>
+            {% endif %}
+                <div class="show-dropdown">
+                <div class="default_option">Afficher</div>  
+                <ul>
+                    <li><a href="?{{ urlHelper('show',10) }}">10/Pages</a></li>
+                    <li><a href="?{{ urlHelper('show',25) }}">25/Pages</a></li>
+                    <li><a href="?{{ urlHelper('show',50) }}">50/Pages</a></li>
+                    <li><a href="?{{ urlHelper('show',100) }}">100/Pages</a></li>
+                </ul>
+            </div>
+            <div class="show-proc" style="width: 182px;">
+                <div class="default_option">Procuration</div>  
+                <ul style="width: 182px;">
+                    <li><a href="?{{ urlHelper('proc',1) }}">{% if request.args.get('proc','') and request.args.get('proc','') == '1' %} <i class="fi-rr-check" style="margin-right: 10px;"></i> {% endif %}Procuration</a></li>
+                    <li><a href="?{{ urlHelper('proc',0) }}">{% if request.args.get('proc','') and request.args.get('proc','') == '0' %} <i class="fi-rr-check" style="margin-right: 10px;"></i> {% endif %}Non Procuration</a></li>
+                </ul>
+            </div>
+            <div class="show-voix" style="width: 120px;">
+                <div class="default_option">Voix</div>  
+                <ul style="width: 120px;">
+                    <li><a href="?{{ urlHelper('voix',1) }}">{% if request.args.get('voix','') and request.args.get('voix','') == '1' %} <i class="fi-rr-check" style="margin-right: 10px;"></i> {% endif %}Valable</a></li>
+                    <li><a href="?{{ urlHelper('voix',0) }}">{% if request.args.get('voix','') and request.args.get('voix','') == '0' %} <i class="fi-rr-check" style="margin-right: 10px;"></i> {% endif %}Blanc/Nul</a></li>
+                </ul>
+            </div>
+            <div class="show-type">
+                <div class="default_option">Type Voting</div>  
+                <ul>
+                    <li><a href="?{{ urlHelper('type',0) }}">{% if request.args.get('type','') and request.args.get('type','') == '0' %} <i class="fi-rr-check" style="margin-right: 10px;"></i> {% endif %}Présidentielles</a></li>
+                    <li><a href="?{{ urlHelper('type',1) }}">{% if request.args.get('type','') and request.args.get('type','') == '1' %} <i class="fi-rr-check" style="margin-right: 10px;"></i> {% endif %}Législatives</a></li>
+                </ul>
+            </div>
+            <button onclick="popUp();" >Nouveau Vote<i class="fi-rr-plus"></i></button>
+        </div>
+    </div>
+    <div class="table-list">
+        <table>
+            <thead>
+                <th></th>
+                <th>{{ th('numCandidat','numCandidat', 'Candidat')|safe }}</th>
+                <th>{{ th('numElecteur','numElecteur', 'Electeur')|safe }}</th>
+                <th>{{ th('BUREAU_numBureau','BUREAU_numBureau', 'Bureau')|safe }}</th>
+                <th>{{ th('Voix','Voix', 'Voix')|safe }}</th>
+                <th>{{ th('jour','jour', 'Jour')|safe }}</th>
+                <th>{{ th('Procuration','Procuration', 'Procuration')|safe }}</th>
+                <th>{{ th('typeVote','typeVote', 'Type Vote')|safe }}</th>
+            </thead>
+            <tbody>
+                {% if allVote %}
+                {% for item in allVote %}
+                <tr>
+                    <td class="img">
+                        <div>
+                        <img src="{{url_for('static',filename='images/dev_img/world.jpg')}}" alt="">
+                    </div>
+                    </td>
+                    <td><span>{{ item[2] }} {{ item[3] }}</span></td>
+                    <td><span>{{ item[0] }} {{ item[1] }}</span></td>
+                    <td><span>Bureau VTE {{ item[4] }}</span></td>
+                    <td><span>{% if item[5] == 1 %}Valable{% else %}Non Valable{% endif %}</span></td>
+                    <td><span>{{ item[6] }}</span></td>
+                    <td><span>{% if item[7] == 1 %}Procuration{% else %}Non Procuration{% endif %}</span></td>
+                    <td><span>{% if item[7] == 1 %}Législatives{% else %}Présidentielles{% endif %}</span></td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td style="text-align: center;" colspan="8">Aucun enregistrement trouvé</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <div class="table-nav">
+        <div class="pagination">
+            {% if nbrPage > 1 and currentPage > 1 %}
+                <a href="?{{ urlHelper('p',currentPage - 1) }}"><i class="fi-rr-angle-left"></i> Précedent</a>
+            {% endif %}
+            {% if nbrPage > 1 and currentPage < nbrPage %}
+                <a href="?{{ urlHelper('p',currentPage + 1) }}">Suivant <i class="fi-rr-angle-right"></i></a>
+            {% endif %}
+        </div>
+        <p><span>{{ nbr_elements_courant }}/{{ nbrElements }}</span> Elements</p>
+    </div>
+    </section>
+
+    <div class="popUp_section">
+        <div class="popUp_container">
+            <div class="popUp_row">
+                <div class="pop_header">
+                    <p>Vote</p>
+                    <i onclick="popUp();" class="fi-rr-cross"></i>
+                </div>
+                <div class="popUp_body">
+                    <div class="pop-form">
+                        <form action="{{url_for('addVote')}}" method="POST">
+                            <div class="field">
+                                <div class="input-area">
+                                    <select required name="numCandidat" id="numCandidat">
+                                        <option selected disabled>Candidat</option>
+                                        {% for candidat in allCandidat %}
+                                        <option value="{{ candidat[0] }}">{{ candidat[1] }} {{ candidat[2] }}</option>
+                                        {% endfor %} 
+                                    </select>
+                                    <i class="icon fi-rr-comment-user"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <select required name="numElecteur" id="numElecteur">
+                                        <option selected disabled>Electeur</option>
+                                        {% for electeur in allElecteur %}
+                                        <option value="{{ electeur[0] }}">{{ electeur[1] }} {{ electeur[2] }}</option>
+                                        {% endfor %} 
+                                    </select>
+                                    <i class="icon fi-rr-user-time"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <select required name="BUREAU_numBureau" id="BUREAU_numBureau">
+                                        <option selected disabled>Bureau</option>
+                                        {% for bureau in allBureau %}
+                                        <option value="{{ bureau[0] }}">Bureau VTE {{ bureau[0] }}</option>
+                                        {% endfor %} 
+                                    </select>
+                                    <i class="icon fi-rr-school"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <select required name="Voix" id="voix">
+                                        <option selected disabled>Voix</option>
+                                        <option value="1">Valable</option>
+                                        <option value="0">Blanc/Nul</option>
+                                    </select>
+                                    <i class="icon fi-rr-microphone"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <select required name="Procuration" id="Procuration">
+                                        <option selected disabled>Procuration</option>
+                                        <option value="1">Procuration</option>
+                                        <option value="0">Non Procuration</option>
+                                    </select>
+                                    <i class="icon fi-rr-share"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <select required name="typeVote" id="typeVote">
+                                        <option selected disabled>Type Vote</option>
+                                        <option value="0">Élections Présidentielles</option>
+                                        <option value="1">Élections Législatives</option>
+                                    </select>
+                                    <i class="icon fi-rr-comment"></i>
+                                </div>
+                            </div>
+                            <div class="validateBtn">
+                                <input name="add" type="submit" value="Enregistrer">
+                                <input onclick="popUp();" type="reset" value="Annuler">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include("static_footer.html") %}
+</body>
+</html>
+{% endblock %}

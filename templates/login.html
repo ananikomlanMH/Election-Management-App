@@ -1,0 +1,48 @@
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Election</title>
+    {% include("static_header.html") %}
+</head>
+<body>
+    <div class="loader">
+        <img src="{{url_for('static',filename='images/dev_img/election_logo.svg')}}" alt="logo" class="loader-img">
+        <div class="loader-bar"></div>
+    </div>
+    <div class="login-container">
+        <div class="login-section">
+            <div class="login-form">
+                <h1>Connexion</h1>
+                <form action="{{url_for('loginUser')}}" method="POST">
+                    <div class="field email">
+                        <div class="input-area">
+                            <input autocomplete="off" type="text" placeholder="Username" name="username" id="username">
+                            <i class="icon fi-rr-envelope"></i>
+                            <i class="error error-icon fi-rr-exclamation"></i>
+                        </div>
+                        <div class="error error-txt">Veuillez renseigner votre username</div>
+                    </div>
+                    <div class="field password">
+                        <div class="input-area">
+                            <input type="password" placeholder="Mot de passe" name="password" id="password">
+                            <i class="icon fi-rr-lock"></i>
+                            <i class="error error-icon fas fi-rr-exclamation"></i>
+                        </div>
+                        <div class="error error-txt">Veuillez renseigner votre mot de passe</div>
+                    </div>
+                    <div class="pass-txt"><a href="#">Mot de passe oublié ?</a></div>
+                    <input type="submit" value="Se Connecter">
+                </form>
+                <div class="terms-txt"><a href="#">Termes et Conditions</a></div>
+                <div class="login-txt">Vous n'avez pas un compte Election.one ? <a href="#">S'inscrire</a></div>
+            </div>
+        </div>
+    </div>
+    {% include("static_footer.html") %}
+</body>
+</html>
+{% endblock %}

@@ -1,0 +1,181 @@
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Communes - Election</title>
+    {% include("static_header.html") %}
+</head>
+<body>
+    {% include("static_navbar.html") %}
+
+    <section class="home-section">
+    <div class="link">Communes</div>
+    <div class="filter-form">
+        <div class="wrapper">
+            <div class="search_box">
+                <div class="dropdown">
+                    <div class="default_option">Trier Par</div>  
+                    <ul>
+                        <li><a href="?{{ urlHelperWiths2Params('sort','numDepartement','dir','ASC') }}">ID</a></li>
+                        <li><a href="?{{ urlHelperWiths2Params('sort','departement','dir','ASC') }}">Departement</a></li>
+                    </ul>
+                </div>
+                <form action="" method="get">
+                    <div class="search_field">
+                        <input type="text" autocomplete="off" name="q" class="input" placeholder="Rechercher..." {% if(request.args.get('q','')) %} value="{{ request.args.get('q','') }}" {% endif %}>
+                        <i class="icon-search fi-rr-search"></i>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="addBtn" style="display: flex;">
+            {% if(request.args.get('q','') or request.args.get('show','') or request.args.get('sort','')) %}
+                <button class="filter"><a href="{{ url_for('communes')}}">Effacer les filtres</a><i class="fi-rr-broom"></i></button>
+            {% endif %}
+                <div class="show-dropdown">
+                <div class="default_option">Afficher</div>  
+                <ul>
+                    <li><a href="?{{ urlHelper('show',10) }}">10/Pages</a></li>
+                    <li><a href="?{{ urlHelper('show',25) }}">25/Pages</a></li>
+                    <li><a href="?{{ urlHelper('show',50) }}">50/Pages</a></li>
+                    <li><a href="?{{ urlHelper('show',100) }}">100/Pages</a></li>
+                </ul>
+            </div>
+            <button onclick="popUp();" >Nouvelle Commune<i class="fi-rr-plus"></i></button>
+        </div>
+    </div>
+    <div class="table-list">
+        <table>
+            <thead>
+                <th></th>
+                <th>{{ th('commune','commune', 'Communes')|safe }}</th>
+                <th>{{ th('DEPARTEMENT_numDepartement','DEPARTEMENT_numDepartement', 'Departements')|safe }}</th>
+                <th></th>
+            </thead>
+            <tbody>
+                {% if allCommune %}
+                {% for item in allCommune %}
+                <tr>
+                    <td class="img">
+                        <div>
+                        <img src="{{url_for('static',filename='images/dev_img/map-maker.jpg')}}" alt="">
+                    </div>
+                    </td>
+                    <td><span>{{ item[0] }}</span></td>
+                    <td><span>{{ item[1] }}</span></td>
+                    <td class="table_drop_action"><i class='icon fi-rr-menu-dots-vertical'></i>
+                        <div class="dropdown">
+                            <ul>
+                                <li><a href="#" onclick="popEdit('{{ item[2] }}');" ><i class="fi-rr-edit"></i>Editer</a></li>
+                                <li><a class="deleteData" href="/deleteCommune/{{ item[2] }}" data-content = "la commune {{ item[1] }}"><i class="fi-rr-trash"></i>Supprimer</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td style="text-align: center;" colspan="4">Aucun enregistrement trouvé</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <div class="table-nav">
+        <div class="pagination">
+            {% if nbrPage > 1 and currentPage > 1 %}
+                <a href="?{{ urlHelper('p',currentPage - 1) }}"><i class="fi-rr-angle-left"></i> Précedent</a>
+            {% endif %}
+            {% if nbrPage > 1 and currentPage < nbrPage %}
+                <a href="?{{ urlHelper('p',currentPage + 1) }}">Suivant <i class="fi-rr-angle-right"></i></a>
+            {% endif %}
+        </div>
+        <p><span>{{ nbr_elements_courant }}/{{ nbrElements }}</span> Elements</p>
+    </div>
+    </section>
+
+    <div class="popUp_section">
+        <div class="popUp_container">
+            <div class="popUp_row">
+                <div class="pop_header">
+                    <p>Communes</p>
+                    <i onclick="popUp();" class="fi-rr-cross"></i>
+                </div>
+                <div class="popUp_body">
+                    <div class="pop-form">
+                        <form action="{{url_for('addCommune')}}" method="POST">
+                            <div class="field">
+                                <div class="input-area">
+                                    <input required autocomplete="off" type="text" placeholder="Commune" name="commune">
+                                    <i class="icon fi-rr-map-marker"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <select required name="DEPARTEMENT_numDepartement" id="DEPARTEMENT_numDepartement">
+                                        <option selected disabled>Departement</option>
+                                        {% for item in allDepartement %}
+                                        <option value="{{ item[0] }}">{{ item[1] }}</option>
+                                        {% endfor %} 
+                                    </select>
+                                    <i class="icon fi-rr-map"></i>
+                                </div>
+                            </div>
+                            <div class="validateBtn">
+                                <input name="add" type="submit" value="Enregistrer">
+                                <input onclick="popUp();" type="reset" value="Annuler">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- edit popup -->
+    {% for item in allCommune %}
+    <div class="popUp_section editId{{ item[2] }}">
+        <div class="popUp_container">
+            <div class="popUp_row">
+                <div class="pop_header">
+                    <p>Commune: <span>{{ item[0] }}</span></p>
+                    <i onclick="popEdit('{{ item[2] }}');" class="fi-rr-cross"></i>
+                </div>
+                <div class="popUp_body">
+                    <div class="pop-form">
+                        <form action="{{url_for('editCommune')}}" method="POST">
+                            <div class="field">
+                                <input type="hidden" name="numCommune" value="{{ item[3] }}">
+                                <div class="input-area">
+                                    <input required autocomplete="off" type="text" placeholder="Commune" name="commune" value="{{ item[0] }}">
+                                    <i class="icon fi-rr-world"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <select required name="DEPARTEMENT_numDepartement" id="DEPARTEMENT_numDepartement">
+                                        {% for departement in allDepartement %}
+                                        <option value="{{ departement[0] }}" {% if departement[0] == item[2] %} selected {% else %} '' {% endif %}>{{ departement[1] }}</option>
+                                        {% endfor %} 
+                                    </select>
+                                    <i class="icon fi-rr-world"></i>
+                                </div>
+                            </div>
+                            <div class="validateBtn">
+                                <input name="edit" type="submit" value="Enregistrer">
+                                <input onclick="popEdit('{{ item[2] }}');" type="reset" value="Annuler">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% include("static_footer.html") %}
+</body>
+</html>
+{% endblock %}

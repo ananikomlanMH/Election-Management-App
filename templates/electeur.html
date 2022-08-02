@@ -1,0 +1,251 @@
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electeurs - Election</title>
+    {% include("static_header.html") %}
+</head>
+<body>
+    {% include("static_navbar.html") %}
+
+    <section class="home-section">
+    <div class="link">Electeurs</div>
+    <div class="filter-form">
+        <div class="wrapper">
+            <div class="search_box">
+                <div class="dropdown">
+                    <div class="default_option">Trier Par</div>  
+                    <ul>
+                        <li><a href="?{{ urlHelperWiths2Params('sort','numElecteur','dir','ASC') }}">ID</a></li>
+                        <li><a href="?{{ urlHelperWiths2Params('sort','nomElecteur','dir','ASC') }}">Noms</a></li>
+                        <li><a href="?{{ urlHelperWiths2Params('sort','dateNaissElecteur','dir','ASC') }}">Date Naissance</a></li>
+                        <li><a href="?{{ urlHelperWiths2Params('sort','genreElecteur','dir','ASC') }}">Genre</a></li>
+                    </ul>
+                </div>
+                <form action="" method="get">
+                    <div class="search_field">
+                        <input type="text" autocomplete="off" name="q" class="input" placeholder="Rechercher..." {% if(request.args.get('q','')) %} value="{{ request.args.get('q','') }}" {% endif %}>
+                        <i class="icon-search fi-rr-search"></i>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="addBtn" style="display: flex;">
+            {% if(request.args.get('q','') or request.args.get('show','') or request.args.get('sort','')) %}
+                <button class="filter"><a href="{{ url_for('electeurs')}}">Effacer les filtres</a><i class="fi-rr-broom"></i></button>
+            {% endif %}
+                <div class="show-dropdown">
+                <div class="default_option">Afficher</div>  
+                <ul>
+                    <li><a href="?{{ urlHelper('show',10) }}">10/Pages</a></li>
+                    <li><a href="?{{ urlHelper('show',25) }}">25/Pages</a></li>
+                    <li><a href="?{{ urlHelper('show',50) }}">50/Pages</a></li>
+                    <li><a href="?{{ urlHelper('show',100) }}">100/Pages</a></li>
+                </ul>
+            </div>
+            <button onclick="popUp();" >Nouveau Electeur<i class="fi-rr-plus"></i></button>
+        </div>
+    </div>
+    <div class="table-list">
+        <table>
+            <thead>
+                <th></th>
+                <th>{{ th('nomElecteur','nomElecteur', 'Noms')|safe }}</th>
+                <th>{{ th('dateNaissElecteur','dateNaissElecteur', 'Date Naissance')|safe }}</th>
+                <th>{{ th('genreElecteur','genreElecteur', 'Genre')|safe }}</th>
+                <th>{{ th('numPiece','numPiece', 'Piece')|safe }}</th>
+                <th>{{ th('inscrire.numBureau','inscrire.numBureau', 'Bureau')|safe }}</th>
+                <th></th>
+            </thead>
+            <tbody>
+                {% if allElecteur %}
+                {% for item in allElecteur %}
+                <tr>
+                    <td class="img">
+                        <div>
+                        <img src="{{url_for('static',filename='images/dev_img/user-time.jpg')}}" alt="">
+                    </div>
+                    </td>
+                    <td><span>{{ item[1] }} {{ item[2] }}</span></td>
+                    <td><span>{{ item[3].strftime('%d/%m/%Y') }}</span></td>
+                    <td><span>{% if item[4] == 'M' %} Masculin {% else %} Feminin {% endif %}</span></td>
+                    <td><span>{{ item[5] }}</span></td>
+                    <td><span>Bureau VTE {{ item[6] }}</span></td>
+                    <td class="table_drop_action"><i class='icon fi-rr-menu-dots-vertical'></i>
+                        <div class="dropdown">
+                            <ul>
+                                <li><a href="#" onclick="popEdit('{{ item[0] }}');" ><i class="fi-rr-edit"></i>Editer</a></li>
+                                <li><a class="deleteData" href="/deleteElecteur/{{ item[0] }}" data-content = "l'electeur {{ item[1] }} {{ item[2] }}"><i class="fi-rr-trash"></i>Supprimer</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td style="text-align: center;" colspan="6">Aucun enregistrement trouvé</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <div class="table-nav">
+        <div class="pagination">
+            {% if nbrPage > 1 and currentPage > 1 %}
+                <a href="?{{ urlHelper('p',currentPage - 1) }}"><i class="fi-rr-angle-left"></i> Précedent</a>
+            {% endif %}
+            {% if nbrPage > 1 and currentPage < nbrPage %}
+                <a href="?{{ urlHelper('p',currentPage + 1) }}">Suivant <i class="fi-rr-angle-right"></i></a>
+            {% endif %}
+        </div>
+        <p><span>{{ nbr_elements_courant }}/{{ nbrElements }}</span> Elements</p>
+    </div>
+    </section>
+
+    <div class="popUp_section">
+        <div class="popUp_container">
+            <div class="popUp_row">
+                <div class="pop_header">
+                    <p>Electeur</p>
+                    <i onclick="popUp();" class="fi-rr-cross"></i>
+                </div>
+                <div class="popUp_body">
+                    <div class="pop-form">
+                        <form action="{{url_for('addElecteur')}}"  method="POST">
+                            <div class="field">
+                                <div class="input-area">
+                                    <input required autocomplete="off" type="text" placeholder="Nom" name="nomElecteur">
+                                    <i class="icon fi-rr-user"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <input required autocomplete="off" type="text" placeholder="Prénom" name="prenomElecteur">
+                                    <i class="icon fi-rr-user"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <input required type="date" placeholder="Date Naissance" name="dateNaissElecteur">
+                                    <i class="icon fi-rr-calendar"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <select required name="genreElecteur" id="genreElecteur">
+                                        <option data-placeholder="true"></option>
+                                        <option value="M">Masculin</option>
+                                        <option value="F">Feminin</option>
+                                    </select>
+                                    <i class="icon fi-rr-user"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="field">
+                                <div class="input-area">
+                                    <input required autocomplete="off" type="text" placeholder="Piece" name="numPiece">
+                                    <i class="icon fi-rr-document"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <select required name="numBureau" id="numBureau">
+                                        <option data-placeholder="true"></option>
+                                        {% for bureau in allBureau %}
+                                        <option value="{{ bureau[0] }}">Bureau VTE {{ bureau[0] }}</option>
+                                        {% endfor %} 
+                                    </select>
+                                    <i class="icon fi-rr-school"></i>
+                                </div>
+                            </div>
+                            <div class="validateBtn">
+                                <input name="add" type="submit" value="Enregistrer">
+                                <input onclick="popUp();" type="reset" value="Annuler">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {% for electeur in allElecteur %}
+
+    <div class="popUp_section editId{{electeur[0]}}">
+        <div class="popUp_container">
+            <div class="popUp_row">
+                <div class="pop_header">
+                    <p>Electeur: <span>{{ electeur[1] }} {{ electeur[2] }}</span></p>
+                    <i onclick="popEdit('{{ electeur[0] }}');" class="fi-rr-cross"></i>
+                </div>
+                <div class="popUp_body">
+                    <div class="pop-form">
+                        <form action="{{url_for('editElecteur')}}"  method="POST">
+                            <input type="hidden" name="numElecteur" value="{{electeur[0]}}">
+                            <div class="field">
+                                <div class="input-area">
+                                    <input required autocomplete="off" value="{{electeur[1]}}" type="text" placeholder="Nom" name="nomElecteur">
+                                    <i class="icon fi-rr-user"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <input required autocomplete="off" value="{{electeur[2]}}" type="text" placeholder="Prénom" name="prenomElecteur">
+                                    <i class="icon fi-rr-user"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <input required type="date" placeholder="Date Naissance" value="{{electeur[3]}}" name="dateNaissElecteur">
+                                    <i class="icon fi-rr-calendar"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <select required name="genreElecteur" id="genreElecteur">
+                                        <option data-placeholder="true"></option>
+                                        <option value="M" {% if electeur[4] == 'M' %} selected {% endif %}>Masculin</option>
+                                        <option value="F" {% if electeur[4] == 'F' %} selected {% endif %}>Feminin</option>
+                                    </select>
+                                    <i class="icon fi-rr-user"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="field">
+                                <div class="input-area">
+                                    <input required autocomplete="off" type="text" value="{{electeur[5]}}" placeholder="Piece" name="numPiece">
+                                    <i class="icon fi-rr-document"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="input-area">
+                                    <select required name="numBureau" id="numBureau">
+                                        <option data-placeholder="true"></option>
+                                        {% for bureau in allBureau %}
+                                        <option value="{{ bureau[0] }}" {% if electeur[6] == bureau[0] %} selected {% endif %} >Bureau VTE {{ bureau[0] }}</option>
+                                        {% endfor %} 
+                                    </select>
+                                    <i class="icon fi-rr-school"></i>
+                                </div>
+                            </div>
+                            <div class="validateBtn">
+                                <input name="add" type="submit" value="Enregistrer">
+                                <input onclick="popEdit('{{ electeur[0] }}');" type="reset" value="Annuler">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endfor %}
+
+    {% include("static_footer.html") %}
+</body>
+</html>
+{% endblock %}
