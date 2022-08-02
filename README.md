@@ -55,6 +55,10 @@ He manages :
 * Voting
 * Candidates
 * Electors
+* Vote Place
+* Municipalities
+* Departments
+* Regions
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -64,6 +68,7 @@ He manages :
 ### Built With
 
 * ![Python]
+* ![flask]
 * ![html]
 * ![css]
 * ![sass]
@@ -86,6 +91,7 @@ He manages :
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/komlan-mawulom-h-anani-b86a30219
 [product-screenshot]: static/images/dev_img/screenshot_1.svg
+[Python]: https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white
 [Python]: https://img.shields.io/badge/Python-000000?style=for-the-badge&logo=python&logoColor=white
 [html]: https://img.shields.io/badge/HTML-dd4b25?style=for-the-badge&logo=html5&logoColor=white
 [css]: https://img.shields.io/badge/CSS3-1181d9?style=for-the-badge&logo=css3&logoColor=white
